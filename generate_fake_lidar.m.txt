@@ -1,0 +1,14 @@
+if ~exist("data","dir")
+    mkdir("data");
+end
+
+scans = cell(1,50);
+
+for i = 1:50
+    angles = linspace(-pi/2, pi/2, 100);
+    ranges = 5 + rand(1,100);
+    scans{i} = lidarScan(ranges, angles);
+end
+
+save("data/lidar_scans.mat","scans");
+disp("Fake LiDAR data generated.");

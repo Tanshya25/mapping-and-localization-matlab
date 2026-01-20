@@ -1,0 +1,30 @@
+clc; clear; close all;
+
+% Generate 
+if ~isfile("data/lidar_scans.mat")
+    generate_fake_lidar;
+end
+
+% Load LiDAR data
+load("data/lidar_scans.mat"); % variable: scans
+
+% Build map
+map = build_map(scans);
+
+% Localize robot
+estimatedPoses = localize_robot(scans, map);
+
+% Show map
+figure;
+show(map);
+title("Generated Occupancy Map");
+
+% Plot estimated trajectory
+hold on;
+plot(estimatedPoses(:,1), estimatedPoses(:,2), 'r', 'LineWidth', 2);
+legend("Map", "Estimated Path");
+
+% Save results
+if ~exist("results","dir"); mkdir("results"); end
+saveas(gcf, "results/map.png");
+saveas(gcf, "results/localization.png");

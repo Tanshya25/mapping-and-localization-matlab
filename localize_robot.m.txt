@@ -1,0 +1,17 @@
+function estimatedPoses = localize_robot(scans, map)
+
+    pf = stateEstimatorPF;
+    pf.StateTransitionFcn = @(state) state;
+    pf.MeasurementLikelihoodFcn = @(state, meas) 1;
+
+    initialize(pf, 100, [10 10 0], diag([1 1 0.1]));
+
+    estimatedPoses = zeros(length(scans), 3);
+
+    for i = 1:length(scans)
+        predict(pf);
+        correct(pf, scans{i});
+        estimatedPoses(i,:) = mean(pf.Particles);
+    end
+
+end
